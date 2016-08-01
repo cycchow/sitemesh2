@@ -23,6 +23,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * DefaultFactory, reads configuration from the <code>sitemesh.configfile</code> init param,
@@ -43,6 +45,9 @@ import java.util.*;
  * @version $Revision: 1.8 $
  */
 public class DefaultFactory extends BaseFactory {
+
+    public final static Logger logger = Logger.getLogger(DefaultFactory.class.getName()); 
+    
     String configFileName;
     private static final String DEFAULT_CONFIG_FILENAME = "/WEB-INF/sitemesh.xml";
 
@@ -145,7 +150,9 @@ public class DefaultFactory extends BaseFactory {
         else if (configFile.exists() && configFile.canRead()) {
             is = configFile.toURL().openStream();
         }
-
+        if (is == null){
+            logger.log(Level.WARNING, "cannot find or read file: "+configFile.getAbsoluteFile() + " exist: " + configFile.exists() + " read:" + configFile.canRead()+", try to use default ");
+        }
         if (is == null){ // load the default sitemesh configuration
             is = getClass().getClassLoader().getResourceAsStream("com/opensymphony/module/sitemesh/factory/sitemesh-default.xml");
         }
